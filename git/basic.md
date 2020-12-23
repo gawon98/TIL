@@ -123,6 +123,31 @@ $ git mv <원래 이름> <변경 할 이름>
 
 
 
+### 원격 저장소 등록하기
+
+```
+$ git remote add origin <URL> #등록하기
+
+$ git remote -V  # 원격 저장소 확인하기
+origin <URL>... # origin remote 저장소의 이름
+
+$ git remote rm <remote_repo_name>
+
+$ git remote -v $ 없어진 것 확인
+```
+
+
+
+### 원격 저장소에 push 하기
+
+```
+$ git push origin master # remote 이름이 origin 
+```
+
+이름 따로 달꺼면 반드시 origin 아니여도 된다.
+
+
+
 ## Summary
 
 | 명령어                             | 설명                                                  |
