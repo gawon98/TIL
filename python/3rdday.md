@@ -235,7 +235,7 @@ print(random.random()) #모듈명,함수명()
 
 
 
-### count
+### count - 문자열함수
 
 ```
 a="hello"
