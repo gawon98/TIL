@@ -116,6 +116,8 @@ with open("hello.txt","w") as f:
 
 리스트 쓸때 문자열 에러남 writelines 쓸것.
 
+writelines : 한꺼번에 모든 줄 쓰기.
+
 
 
 ```
@@ -163,6 +165,8 @@ with open("hello.txt","r") as f:
 ['hello\n', 'nice to meet you\n', 'bye\n']
 
 리스트로 출력됨
+
+readlines : 텍스트를 한꺼번에 모두 읽어옴
 
 
 
