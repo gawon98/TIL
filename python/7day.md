@@ -140,6 +140,8 @@ with open("hello.txt","r") as f:
 
 # readline()
 
+: 반복문과 사용할 것
+
 ```
 with open("hello.txt","r") as f:
     line=None
