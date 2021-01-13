@@ -332,7 +332,7 @@ print(re.search(r"\\section","kldsk sdf \section")) #\s는 엔터,공백 문자
 print(re.match("(hi){3}","hihihihelloworld"))
 ```
 
-hi{3}이면 hiii 니까 소괄호( hi)로 묶어주기!
+hi{3}이면 hiii 니까 소괄호( hi )로 묶어주기!
 
 
 
@@ -346,13 +346,106 @@ print(re.match("[0-9]{2,3}-[0-9]{3,4}-[0-9]{4}","02-1234-5678"))
 
 
 
+```
+print(re.match("[ㄱ-ㅎ]+", "ㅋㅋㅋㅋ캬캬캬캬ㅋㅋㅋㅎㅎㅎ")) #캬부터 매치 x
+```
+
+```
+print(re.match("[ㄱ-ㅎ가-힣]+", "ㅋㅋㅋㅋ캬캬캬캬ㅋㅋㅋㅎㅎㅎ")) #한글전체! 
+```
 
 
 
+```
+print(re.findall("[ㄱ-ㅎ가-힣]", "ㅋㅋㅋㅋ캬캬캬캬ㅋㅋㅋㅎㅎㅎ")) #한글만 추출
+print(re.findall("[^ㄱ-ㅎ가-힣]", "ㅋㅋㅋㅋ캬캬캬캬ㅋㅋㅋㅎㅎㅎ"))# 한글을 제외한 모든 문자 추출
+```
 
 
 
+## 뉴스에서 한글 뽑기
 
+```
+print(re.findall("[ㄱ-ㅎ가-힣]", news))
+```
+
+뒤에+ 붙이면 한글자 이상인 것 (단어단위)로 추출 
+
+
+
+```
+print(re.findall("[0-9]+[ㄱ-ㅎ가-힣]+",news))
+```
+
+3차, 1천명 처럼 숫자+한글
+
+
+
+`[0-9]+[명]+ `: ~명
+
+`[0-9]+[명|천]+ `: or 가능!
+
+
+
+```
+print(re.match("[0-9]+", 'hello119')) #none
+
+print(re.search("[0-9]+$", 'hello119'))#match
+```
+
+달러 : `$`는 문자열의 마지막을 의미한다 `python$`이라면 문자열의 마지막은 항상 python으로 끝나야 매치된다는 의미이다.
+
+```
+print(re.search("\*",'3*5')) #특수문자는 앞에 역슬래쉬
+print(re.search("[*]+",'3**5'))
+print(re.search("\**", '3****5'))
+```
+
+
+
+```
+특문 괄호 전체출력?
+
+print(re.search("\$\([a-z]+\)", "$(document)"))
+print(re.search("[$()a-z]+", "$(document)")) #대괄호가 편하다
+
+```
+
+## group
+
+: 매치된 문자열을 돌려준다
+
+```
+res=re.search("\w+\s+\d+[-]\d+[-]\d+", "kim 010-1234-1234")
+print(res.group())
+print(res.group().split()[0]) #일케안씀
+```
+
+
+
+```
+res=re.search("(\w+)\s+(\d+[-]\d+[-]\d+)", "kim 010-1234-1234")
+#print(res)
+#print(res.group().split()[0])
+print(res.group(0))
+print(res.group(1))
+```
+
+소괄호가 그룹하나! `(\w)`으로 묶고 뽑기
+
+kim 010-1234-1234
+kim
+
+
+
+```
+res=re.search("(?P<name>\w+)\s+(\d+[-]\d+[-]\d+)", "kim 010-1234-1234")
+print(res.group('name'))
+```
+
+
+
+#작성형식 : (?P<그룹명>...)
 
 
 
