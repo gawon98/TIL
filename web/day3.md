@@ -159,6 +159,7 @@ print(data)
 BeautifulSoup 패키지
 
 ```
+#  import requests
 from bs4 import BeautifulSoup
 ```
 
@@ -280,7 +281,7 @@ print(soup.find(id='title').string)
 #<태그명 속성명=속성값 속성명=속성값...>
 
 soup = BeautifulSoup(html3,"html.parser")
-print(soup) #문자열 -> thml파서로 분석할 수 있는 객체로 변환
+print(soup) #문자열 -> html.parser 로 분석할 수 있는 객체로 변환
 print(html3) #문자열을 저장하고 있는 변수 
 
 print(soup.find_all("a")) #리스트로 , a태그로 묶인 내용 나옴 soup이라 객체로 나옴 그냥 html3이랑 당연히 다름 
@@ -288,7 +289,7 @@ print(soup.find_all("a")) #리스트로 , a태그로 묶인 내용 나옴 soup�
 
 
 
-### 속성값
+### 속성값 attrs[]
 
 ```
 links=soup.find_all("a")
@@ -322,7 +323,7 @@ daum --> http://www.daum.net
 
 
 
-
+#### attrs 딕셔너리 활용
 
 ```
 <p><a href="aaa.html">aaa page</a></p>
