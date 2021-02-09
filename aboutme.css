@@ -1,0 +1,171 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Gaegu:wght@300;400&display=swap');
+
+* {
+  box-sizing: border-box;
+}
+
+#topMenu{
+    height: 50px;
+    width: 2000px;
+
+    margin:0 auto;
+    }
+
+#topMenu ul li {
+
+    list-style: none;
+    color: white;
+    background-color:rgb(180,166,150);
+    float: left;
+
+    line-height: 50px;
+    vertical-align: middle;
+    text-align: center;
+  }
+.menuLink {
+    font-family: 'Gaegu', cursive;
+    text-decoration:none;
+    color: white;
+    display: block;
+    width: 505px;
+    font-size: 20px;
+    font-weight: bold;
+    }
+
+.menuLink:hover {
+    color: black;
+    background-color:rgb(245,245,220);
+    }
+
+body {
+  margin: 0;
+}
+
+.content {
+  width: 100%;
+  max-width: 1550px;
+  margin: 10px auto;
+  padding: 20px;
+
+  background-size: cover;
+  background-color : rgb(230, 230, 230);
+}
+
+.header {
+  padding: 40px;
+  font-size: 0;
+  font-weight: 700;
+  background-color : rgb(250, 250, 250);
+
+}
+
+.header-information {
+  font-family: 'Gaegu', cursive;
+  display: inline-block;
+  width: calc(100% - 250px);
+  font-size: 20px;
+
+}
+
+.name {
+  font-family: 'Gaegu', cursive;
+  font-size: 80px;
+  margin: 0 0 10px 0;
+
+}
+
+.english-name {
+  font-size: 50px;
+  color: #034694;
+  margin: 0 0 10px 0;
+}
+
+.detail {
+  display: inline-block;
+  margin-right: 50px;
+  font-size: 20px;
+}
+
+.portrait {
+  display: inline-block;
+  width: 200px;
+  border-radius: 50%;
+}
+
+.email-emoji{
+  width: 30px;
+}
+
+.address-emoji {
+  width: 30px;
+}
+
+.telephone-number-emoji {
+  width: 30px;
+}
+
+.columns {
+  font-size: 0;
+
+}
+
+.column {
+font-family: 'Gaegu', cursive;
+  display: inline-block;
+  padding: 20px;
+  vertical-align: top;
+  font-size: 30px;
+    background-color : rgb(240, 240, 240);
+}
+
+.column-one {
+  width: 50%;
+}
+
+.column-two {
+  width: 50%;
+}
+
+.intro{
+
+  margin bottom: 10px;
+
+
+}
+
+.school{
+  text-indent: 50px;
+}
+
+.say{
+ font-size:40px;
+  text-align: center;
+
+}
+
+.row {
+  font-size:30px;
+  margin-bottom: 30px;
+}
+
+
+.row-title {
+  margin: 0;
+  /*font-size:52;*/
+  color: #034694;
+  padding-bottom: 10px;
+  border-bottom: 5px solid #034694;
+}
+
+.links{
+   width:80px;
+   height:80px;
+  margin-left: 40% ;
+  margin-top:5%;
+
+}
+.link-content{
+   margin-left: 10%;
+
+}
