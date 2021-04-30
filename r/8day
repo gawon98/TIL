@@ -1,0 +1,609 @@
+여러개일때 if 진짜 필요한지 다시 보기
+
+굳이 안써도 될수도 있음
+
+
+
+# 🚢타이타닉 
+
+```
+#210303
+df<-read.csv("train.csv", na.strings="") #결측 NA
+str(df)
+
+View(df) #v 대문자
+
+#기술통계량 함수가 포함된 패키지
+install.packages("psych")
+library(psych)
+
+#결측맵 함수가 포함된 패키지
+install.packages("Amelia")
+library(Amelia)
+
+missmap(df,col=c("red","grey")) #미싱데이터 색깔
+```
+
+결측값을 버릴것인지 대체할것인지 
+
+버리는 과정에서 중요한 의미를 갖고있는 데이터가 손실될 수 있음
+
+```
+library(dplyr)
+df<-select(df,Survived, Pclass, Age,Sex,SibSp,Parch)
+```
+
+select : df에서 어떤 컬럼을 추출?
+
+❗원래 뺄때 상관분석을 한 후 제거함.
+
+
+
+```
+missmap(df, col=c("red","grey"))
+```
+
+<img src="8day.assets/image-20210303094342046.png" alt="image-20210303094342046" style="zoom:67%;" />
+
+
+
+```
+df<-na.omit(df)
+missmap(df, col=c("red","grey"))
+```
+
+(좋은 방법은 아님!)
+
+<img src="8day.assets/image-20210303094449255.png" alt="image-20210303094449255" style="zoom:67%;" />
+
+
+
+```
+df$Survived<-factor(df$Survived) #팩터로 볼때 활용이 편함
+df$Pclass<-factor(df$Pclass,order=TRUE,levels=c(3,2,1)) #선실 등급은 순서가 있으므로 
+```
+
+
+
+# 공분산
+
+한 변수의 변화가 다른 변수의 변화에 얼만큼의 영향을 주는지
+
+ex) 키가 클수록 몸무게가 많이 나간다
+
+상환계수 -1~1 범위, 0에 가까울수록 무상관
+
+
+
+```
+install.packages("ggplot2")
+library(ggplot2)                  
+install.packages("GGally") #산점도 등 시각화
+library(GGally)
+
+ggcorr(df)
+```
+
+삭제 안한상태로 다시
+
+```
+df<-read.csv("train.csv", na.strings="") #결측 NA
+
+ggcorr(df,nbreaks = 6, label=TRUE,label_size=3,color="grey50")
+```
+
+`ggcorr(nbreaks: 나누는 구간 ,label 박스안에 들어가는 값 )`  
+
+<img src="8day.assets/image-20210303101118717.png" alt="image-20210303101118717" style="zoom:67%;" />
+
+
+
+해석pclass가 낮을수록 survived가 올라감
+
+fare가 높을수록 survived가 올라감 
+
+
+
+# match
+
+: 첫번째 인수 a가 두번째 인수의 몇번째에 있는지 알려준다. 없는 경우 NA가 반환
+
+```
+a=c(1,2,3,4,5)
+b=c(2,5,7,8,9)
+> match(a,b)
+[1] NA  1 NA NA  2
+```
+
+```
+> match(a,b,nomatch = -1)
+[1] -1  1 -1 -1  2
+```
+
+`nomatch =  ` : 매치가 안된경우 ~로 하겠다
+
+
+
+```
+car<-mtcars
+car$name<-row.names(car) #name열 추가
+```
+
+row.names(car)가 필요하지 않음
+
+```
+row.names(car)<-NULL #삭제
+head(car)
+```
+
+
+
+hp 145넘는 자동차모델로 df구성
+
+```
+highhp.car<-car[car$hp>145,]  
+highhp.car
+
+#가벼운 차
+lightwt.car<-car[car$wt<3.2,]
+```
+
+무게가 가볍고 힘이 쎈 차 (match)
+
+```
+#car[car$wt<3.2&car$hp>145,]
+
+index<-match(highhp.car$name,lightwt.car$name)
+ [1] NA NA NA NA NA NA NA NA NA NA NA NA 13 14 NA
+
+lightwt.car[na.omit(index),]
+```
+
+
+
+match 함수 대신 `%in%` 연산자 사용 가능
+
+```
+> vec<-10:1
+> 7 %in% vec
+[1] TRUE
+
+> c(20,15,11,9,8,3,1,0) %in% vec
+[1] FALSE FALSE FALSE  TRUE  TRUE  TRUE  TRUE FALSE
+
+#무게 가볍고 힘이 쎈 차
+idx<-highhp.car$name %in% lightwt.car$name
+highhp.car[idx,]
+
+```
+
+
+
+$ :데이터로부터 하나의 원소를 추출 벡터로 반한
+
+[[]] : 하나의 원소 추출, 리스트or df 모두 사용가능 이름과 위치에 의해 선택
+
+[] : 데이터로부터 여러개의 원소를 추출
+
+```
+mtcars$mpg
+#head(mtcars)
+#str(mtcars)
+mtcars[[1]] #mpg열
+mtcars[['mpg']]
+
+mtcars[c(1,4)] #1열,4열 mpg,hp 나옴
+mtcars[c("mpg","hp")]
+```
+
+
+
+음수 인덱스를 사용해 특정 원소 제외 서브셋 생성
+
+```
+mtcars[-c(2,3,5,7:11)] #mpg,hp,wt만 출력된다
+mtcars[-1] #mpg만 빼고 출력
+```
+
+
+
+특정 열 제거
+
+```
+mtcars[1]<-NULL
+mtcars
+```
+
+
+
+```
+data(iris) #새롭게 열어주기 기존게 남아있어서
+str(iris)
+
+#또 열추출 
+head(iris[1:4])
+iris[,c("Sepal.Length", "Sepal.Width")]
+
+iris[,"Sepal.Length"] #벡터출력
+iris[,"Sepal.Length", drop=FALSE] #df출력
+
+iris["Sepal.Length"] #df
+iris[,"Sepal.Length"] #행렬 컴마의 유무 차이
+```
+
+`drop=FALSE` 옵션으로 데이트 프레임 형식 추출 가능
+
+
+
+```
+iris[1:5,]  # 1~5행 인덱스 데이터가 추출
+iris[1:5]  #1~5 열이 추출
+```
+
+
+
+조건 추출 `subset`
+
+```
+subset(iris,select=c("Sepal.Length", "Sepal.Width"),
+       subset=(Sepal.Length>7))
+```
+
+Sepal.Length>7인 조건을 만족하는 "Sepal.Length", "Sepal.Width"의 값
+
+
+
+# 데이터 무작위 표본 추출
+
+데이터 -> 모델링 ->에측/ 분류
+
+모델링 과정❔
+
+1) 데이터를 훈련용(70%)/ 테스트용(30%)로 분할
+
+2) 오직 훈련용 데이터만으로 모델(예측/분류)을 생성
+
+훈련 데이터로 평가 결과>> 테스트 데이터 평가
+
+
+
+# 표본 추출 sample 함수
+
+`sample(데이터셋, 표본 개수, 복원추출여부)`
+
+1~10 중에서 5개 숫자를 비복원 추출 (중복 x)
+
+```
+sample(1:10,5) #(default)replace =FALSE (비복원)
+> sample(1:10,5)
+[1] 2 6 1 3 4
+
+> sample(1:10,5, replace=TRUE) #복원 중복O
+[1]  8 10  3  2 10 
+
+sample(1:10) #10개가 랜덤하게 비복원
+```
+
+
+
+## seed
+
+seed 값을 동일하게 주면, 매번 발생되는 난수가 동일하게 추출
+
+```
+set.seed(20210303)
+sample(1:10)
+```
+
+선생님이랑 똑같이 출력됨
+
+모델을 평가하기 위해서임
+
+
+
+```
+#데이터프레임 행으로부터 표본 추출
+set.seed(1)
+#행 번호 추출
+sample(1:nrow(iris),5)
+[1]  68 129  43  14  51
+```
+
+
+
+```
+index<-sample(1:nrow(iris),5)
+iris[index,] #랜덤번호에 해당되는 행 출력
+```
+
+
+
+일반적으로 중복값은 제거
+
+## duplicated()
+
+ : 중복 여부를 논리값으로 출력
+
+```
+> duplicated(c(1,2,3,1,1,4,3))
+[1] FALSE FALSE FALSE  TRUE  TRUE FALSE  TRUE
+```
+
+
+
+```
+id<-c("a001","a002","a003")
+name<-c("mouse","keyboard","usb")
+price<-c(3000,9000,5000)
+product<-data.frame(id=id, name=name,price=price)
+product
+
+#중복행 추가
+product<-rbind(product, c("a001","mouse",3000))
+
+duplicated(product) #행단위로 출력된다
+[1] FALSE FALSE FALSE  TRUE
+```
+
+⬆⬆⬆⬆🎦⏏⏏🔼↟↑↑
+
+```
+> product
+    id     name price
+1 a001    mouse  3000
+2 a002 keyboard  9000
+3 a003      usb  5000
+
+> rbind(product, c("a001","mouse",3000))
+    id     name price
+1 a001    mouse  3000
+2 a002 keyboard  9000
+3 a003      usb  5000
+4 a001    mouse  3000
+```
+
+
+
+중복 제외한 데이터만 추출
+
+```
+> product[!duplicated(product),]
+    id     name price
+1 a001    mouse  3000
+2 a002 keyboard  9000
+3 a003      usb  5000
+```
+
+
+
+## which + duplicated 
+
+: 중복위치를 파악
+
+which : true에 해당되는 인덱스를 알려줌 
+
+```
+which(duplicated(product)) #4
+
+#중복행 제거
+idx<-which(duplicated(product))
+product.unique<-product[-idx,] #4행 제거
+product.unique
+```
+
+
+
+중복 원소 파악하지 않고, 제거만 수행 `unique()`
+
+```
+> product
+    id     name price
+1 a001    mouse  3000
+2 a002 keyboard  9000
+3 a003      usb  5000
+4 a001    mouse  3000
+
+> unique(product)
+    id     name price
+1 a001    mouse  3000
+2 a002 keyboard  9000
+3 a003      usb  5000
+```
+
+
+
+! , - 는 의미가 다름
+
+! (not) : 논리값에 대해 반족 (t->f->t)
+
+`-` : 특정 컬럼을 대상에서 제외할때
+
+
+
+# complete.cases 함수 
+
+결측값 제거
+
+```
+complete.cases(airquality) #결측값 있으면 false
+
+#결측값이 없는 행만 추출
+airquality[complete.cases(airquality),]
+
+#결측값이 있는 행만 추출
+airquality[!complete.cases(airquality),]
+```
+
+아니면 omit써도 됨
+
+```
+airquality.nona2<-(na.omit(airquality))
+airquality.nona2
+```
+
+
+
+# cut함수 
+
+: 데이터를 구간에 따라 그룹별로 범주화
+
+```
+cut(x=iris$Sepal.Width, breaks = c(0,1,2,3,4,5))
+#소괄호 개구간 초과or미만 
+```
+
+Levels: (0,1] (1,2] (2,3] (3,4] (4,5]
+
+0<x<=1
+
+```
+cut(x=iris$Sepal.Width, breaks = c(0,1,2,3,4,5),right=FALSE)
+#왼쪽이 폐구간, 오른쪽이 개구간으로 바뀐다
+```
+
+Levels: [0,1) [1,2) [2,3) [3,4) [4,5)
+
+
+
+* table함수, summary 함수와 함께 사용
+
+```
+iris.cut1<-cut(x=iris$Sepal.Width, breaks=c(0,1,2,3,4,5))
+table(iris.cut1)
+summary(iris.cut1)
+
+iris.cut2<-cut(x=iris$Sepal.Width,
+    breaks=c(0,1,2,3,4,5),
+    labels=c("Smaller","Small","Medium","Big","Bigger"))
+
+table(iris.cut2)
+summary(iris.cut2)
+```
+
+결과
+
+```
+iris.cut2
+Smaller   Small  Medium     Big  Bigger 
+      0       1      82      64       3 
+> summary(iris.cut2)
+Smaller   Small  Medium     Big  Bigger 
+      0       1      82      64       3 
+```
+
+```
+cut(x=iris$Sepal.Width, breaks= 5) #자동으로 구간
+
+5 Levels: (2,2.48] (2.48,2.96] (2.96,3.44] ... (3.92,4.4]
+```
+
+
+
+`include.lowest=TRUE` 최솟값을 구간에 포함시킨다. 이 옵션은 계속 써줄것
+
+```
+iris.cut3<-cut(x=iris$Sepal.Width, 
+               breaks= 5,        	labels=c("Smaller","Small","Medium","Big","Bigger"),
+               include.lowest=TRUE)
+iris.cut3
+```
+
+출력
+
+```
+...
+
+[148] Medium  Medium  Medium 
+Levels: Smaller Small Medium Big Bigger
+```
+
+
+
+# sort()
+
+정렬
+
+```
+x<-c(3,7,5,1,2,5)
+sort(x) #오름차순 
+sort(x,decreasing = TRUE) #내림차순
+```
+
+# order()
+
+데이터 프레임 정렬시 사용
+
+```
+y<-c(11,22,33,55,44)
+order(y)
+y[order(y)]
+```
+
+
+
+```
+y<-c(11,22,33,55,44)
+z<-c("ss","bb","ii","aa","pp")
+df<-data.frame(y,z)
+df
+```
+
+```
+#y열 기준으로 오름차순 정렬
+df[order(df$y),]
+
+#y열 기준으로 내림차순 정렬
+df[order(df$y,decreasing=TRUE),]
+
+w<-c("c","c","n","n","n")
+df<-data.frame(y,z,w) #w 열추가
+
+#w열 1차 기준, y열 2차 기준
+df[order(df$w, df$y),]
+```
+
+
+
+# xtfrm()
+
+: 동일하지 않은 정렬 방법을 적용
+
+```
+> df$w
+[1] "c" "c" "n" "n" "n"
+
+> xtfrm(df$w) #숫자 벡터
+[1] 1 1 3 3 3
+```
+
+w 열을 기준으로 내림차순, y열을 기준으로 오름차순
+
+```
+> index<-order(-xtfrm(df$w), df$y)
+> df[index,]
+   y  z w
+3 33 ii n
+5 44 pp n
+4 55 aa n
+1 11 ss c
+2 22 bb c
+```
+
+
+
+`-`: 내림차순 
+
+```
+iris[order(-xtfrm(iris$Species), iris$Sepal.Length),]
+```
+
+
+
+
+
+
+
+
+
+
+

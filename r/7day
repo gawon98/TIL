@@ -1,0 +1,631 @@
+# 함수
+
+```
+#transLength.R
+#미터가 야드로 환산됐음 좋겠다
+
+x<-c(30,50,90)
+tlength<-round(x*0.9144,1)
+tlength
+result<-paste(tlength,"m",sep="")
+print(result)
+```
+
+
+
+
+
+```
+#실행
+source("transLength.R")
+
+#transLength가 함수이름 메모리에 적재됨
+
+transLength<-function(x){
+  tlength<-round(x*0.9144,1)
+  result<-paste(tlength,"m",sep="")
+  return(result)
+}
+```
+
+
+
+```
+ls() #: 메모리에 적재된 변수, 함수 등의 이름이 목록으로 출력됨
+
+```
+
+
+
+실행결과
+
+```
+> transLength(10)
+[1] "9.1m"
+> y<-c(100,150,200)
+> transLength(y)
+[1] "91.4m"  "137.2m" "182.9m"
+```
+
+
+
+```
+trans3<-function(x){
+  tlength<-round(x*0.9144,1)
+  result<-paste(tlength,"m", sep="")
+  return(result)
+  trans3}
+```
+
+
+
+문제 
+
+1야드 = 3피트, 1야드=36인치
+
+```
+y<-c(100,150,200)
+#피트(feat), 인치(inch) 변환이 가능한 함수
+
+transLength<-function(x,mult,unit){
+    tlength<-round(x*mult,digits=1) #소수점 표시
+    result<-paste(tlength,unit, sep="")
+    return(result)
+}
+
+y<-c(100,150,200)
+
+transLength(y,mult=3, unit="ft")
+transLength(y,mult=36, unit="in")
+```
+
+
+
+## ...
+
+```
+transLength<-function(x,mult=0.9144,unit="m",...){
+    tlength<-round(x*mult,...) 
+    result<-paste(tlength,unit, sep="")
+    return(result)
+}
+
+y<-c(100,150,200)
+
+
+transLength(y, digits=3)
+transLength(y)
+# ... 인수 없어도
+```
+
+
+
+digits 으로 받아도 됨
+
+```
+transLength<-function(x,mult=0.9144,unit="m", digits=1){
+  tlength<-round(x*mult,digits=digits) 
+  paste(tlength,unit, sep="")
+}
+
+y<-c(100,150,200)
+
+
+transLength(y)
+```
+
+
+
+## FUN
+
+함수 자체를 인수처럼 취급할 수 있다 `FUN= round`
+
+```
+transLength<-function(x,mult=0.9144,unit="m",FUN=round,...){
+  tlength<-FUN(x*mult,...) 
+  paste(tlength,unit, sep="")
+}
+
+y<-c(100,150,200)
+transLength(y)
+```
+
+꼭 `FUN` 이라 써야됨 (예약어)
+
+
+
+```
+> transLength(y, FUN=floor)
+[1] "91m"  "137m" "182m"
+```
+
+기본값이 round 였지만 floor 지정해주만 floor로 적용된다.
+
+`floor` : 가까운 정수로 출력
+
+
+
+```
+> transLength(y, FUN=signif, digits=3) 
+[1] "91.4m" "137m"  "183m" 
+```
+
+
+
+
+
+# if 
+
+```
+x<-pi
+y<-3
+if(x>y)x
+if(x>y){
+  print(x)
+  }
+if(x<y)x else y
+
+```
+
+
+
+```
+t<-c(TRUE,FALSE,TRUE,FALSE,TRUE)
+y<-1:5
+n<-0
+> ifelse(t,y,n)
+[1] 1 0 3 0 5
+
+```
+
+```
+> x<-pi
+> y<-1:5
+> ifelse(x<y,x,y)
+[1] 1.000000 2.000000 3.000000 3.141593 3.141593
+```
+
+* if문에 들어가는 인수가 행렬이면 모든 경우에 대해 돌아가지 못함 --> ifelse(조건,참일때,거짓일때)로 해결해준다
+
+  
+
+# swith
+
+: 첫번째 인수로 주어진 값에 따라 두 지정된 코드가 실행된다
+
+```
+center<-function(x,type){
+  switch(type,
+        mean=mean(x),
+        median=median(x),
+        trimmed=mean(x,trim=0.1), #10퍼센트 절사평균
+        "choose one of mean, median, and trimmed"
+        
+         )
+}
+}
+x<-c(2,3,5,7,11,13,17)
+center(x,"mean")
+center(x,"median")
+center(x,"trimmed") #절사평균
+
+center(x, "other")
+
+```
+
+절사평균:산술평균이 outlier(이상치) 에 민감하게 반응 
+
+# repeat
+
+```
+i<-5
+repeat{if(i>25)break
+  else{
+    print(i)
+    i<-i+5
+  }
+  }
+```
+
+```
+[1] 5
+[1] 10
+[1] 15
+[1] 20
+[1] 25
+```
+
+```
+i<-5
+while(i<=25){
+  print(i)
+  i<-i+5
+}
+```
+
+결과는 위와 같음
+
+
+```
+for(i in seq(from=5, to=25, by=5))
+print(i)
+```
+
+
+for (변수 in 리스트) 반복 명령문
+반복문 작성시 참고사항
+1) 실행 결과는 루프 안에서 출력되지 않는다
+
+```
+for(i in seq(from=5, to=25, by=5)) i #출력안됨 => 명시적으로 print 함수
+```
+
+2) for 문이 종료된 이후에도 변수는 사라지지 않는다
+
+```
+i<-1 
+for(i in seq(from=5, to=25, by=5)) i
+  print(i)
+[1] 25 
+```
+
+가장 마지막에 i에 할당된 25가 저장되어 있음
+
+
+
+# 데이터 전처리
+
+분석 목적에 적합한 형태일껄
+
+수집되어 전처리 되어야 할 대상 데이터를 r에서 어떤 자료구조로 표현?
+
+자료구조 : 벡터 (하나의 차원),
+
+ 행렬(배열), 리스트, 데이터프레임 등은 (두개 이상의 차원) 
+
+
+
+```
+as.numeric(1.618) #1.618
+mode(1.618) #"numeric"
+as.integer(1.618) #"1"
+as.character(1.618) #"1.618"
+as.numeric("test") #변환이 불가능한 경우는 NA 
+
+mode(as.numeric("1.234")) #numeric
+
+> as.numeric(c("-1","1.5","3.14"))
+[1]  -1.00  1.50  3.14
+```
+
+
+
+```
+> as.numeric(c("-1","1.5","3.14","text")) #NA
+[1] -1.00  1.50  3.14    NA
+경고메시지(들): 
+강제형변환에 의해 생성된 NA 입니다 
+```
+
+앞에껀 변환이 되고 뒤에서 NA!
+
+
+
+```
+> mode(10:20)
+[1] "numeric"
+
+> as.numeric(as.character(10:20))
+ [1] 10 11 12 13 14 15 16 17 18 19 20
+ 
+> #논리값 -> 숫자
+> as.numeric(TRUE)
+[1] 1
+```
+
+
+
+as.변환하고자하는 타입() 으로 데이터변환
+
+```
+as.data.frame(x)
+as.list(x)
+```
+
+is. ~ ( ) : ~타입 인가요?
+
+
+
+## as.list와 list의 차이점
+
+```
+> #벡터의 각 원소가 리스트의 원소로 변환
+> as.list(vec)
+[[1]]
+[1] 1
+
+[[2]]
+[1] 2
+
+[[3]]
+[1] 3
+
+[[4]]
+[1] 4
+
+[[5]]
+[1] 5
+
+[[6]]
+[1] 6
+
+> #벡터 전체가 하나의 원소를 갖는 리스트로 변환
+> list(vec)
+[[1]]
+[1] 1 2 3 4 5 6
+```
+
+
+
+* 벡터를 행렬로 변환 : cbind(), as.matrix(), rbind()
+
+```
+> vec<-1:6
+> vec
+[1] 1 2 3 4 5 6
+
+> cbind(vec)
+     vec
+[1,]   1
+[2,]   2
+[3,]   3
+[4,]   4
+[5,]   5
+[6,]   6
+
+> as.matrix(vec)  
+     [,1]
+[1,]    1
+[2,]    2
+[3,]    3
+[4,]    4
+[5,]    5
+[6,]    6
+```
+
+
+
+
+
+```
+#벡터를 하나의 행으로 구성된 데이터프레임으로 변환
+as.data.frame(rbind(vec))
+rbind(vec)
+```
+
+벡터 -> 매트릭스 -> df
+
+
+
+* 행렬 구조를 벡터, 리스트, 데이터프레임으로 변환
+
+as.vector()
+
+as.list()
+
+as.data.frame()
+
+
+
+#리스트 -> 다른구조
+
+unlist 함수: 리스트 -> 벡터
+
+```
+#unlist: 리스트 -> 벡터, 리스트 요소에 이름이 있는 경우에는 이름을 갖는 벡터로
+
+lst <-list(odd=c(1,3,5), even=c(2,4,6))
+> lst
+$odd
+[1] 1 3 5
+
+$even
+[1] 2 4 6
+
+> unlist(lst)
+ odd1  odd2  odd3 even1 even2 even3 
+    1     3     5     2     4     6 
+```
+
+
+
+as.vector함수로 작성해도 아무 변화 없음
+
+```
+> as.vector(lst)
+$odd
+[1] 1 3 5
+
+$even
+[1] 2 4 6
+```
+
+
+
+```
+> identical(lst, as.vector(lst)) #true
+[1] TRUE
+> lst2 <-list(odd=c(1,3,5), even=c("two","four","six"))
+> lst2
+$odd
+[1] 1 3 5
+
+$even
+[1] "two"  "four" "six"
+```
+
+```
+> unlist(lst2)
+  odd1   odd2   odd3  even1  even2  even3 
+   "1"    "3"    "5"  "two" "four"  "six"
+```
+
+
+
+* 리스트 -> 행렬 : unlist ->벡터 를 행렬로 변환
+
+```
+lst<-list(odd=c(1,3,5), even=c("two","four","six"))
+lstvec<-unlist(lst)
+matrix(lstvec,3,2)
+
+> lstvec
+  odd1   odd2   odd3  even1  even2  even3 
+   "1"    "3"    "5"  "two" "four"  "six" 
+> matrix(lstvec,3,2)
+     [,1] [,2]  
+[1,] "1"  "two" 
+[2,] "3"  "four"
+[3,] "5"  "six" 
+```
+
+
+
+dimnames인수: 리스트의 원소 이름을 행렬의 행 또는 열 이름으로 사용
+
+``` matrix(unlist(lst),3,2, dimnames=list(NULL,names(lst))) ```
+
+주의사항 : 리스트에 matrix함수, as.matrix()를 그대로 적용하면 행렬로 변환 안됨
+
+```#matrix(lst)
+#as.matrix(lst)
+```
+
+
+
+* as.data.frame : 리스트 -> df
+
+숫자와 문자가 섞여있으면 숫자 -> 숫자벡터
+문자-> 문자벡터
+
+```
+lst<-list(odd=c(1,3,5), even=c(2,4,6))
+lstdf<-as.data.frame(lst)
+str(lstdf)
+
+lst2<-list(odd=c(1,3,5), even=c("two","four","six"))
+lstdf2<-as.data.frame(lst2)
+str(lstdf)
+
+> str(lstdf)
+'data.frame':	3 obs. of  2 variables:
+ $ odd : num  1 3 5
+ $ even: num  2 4 6
+ 
+> str(lstdf2)
+'data.frame':	3 obs. of  2 variables:
+ $ odd : num  1 3 5
+ $ even: chr  "two" "four" "six"
+```
+
+
+
+데이터프레임 -> 다른구조로 변환
+데이터프레임 인덱싱: 열로부터 벡터를 생성
+데이터프래임 행 -> 데이터프레임으로 출력
+
+```
+df1<-data.frame(odd=c(1,3,5),even=c(2,4,6))
+> df1
+  odd even
+1   1    2
+2   3    4
+3   5    6
+
+> df1[1,]
+  odd even
+1   1    2
+
+str(df1[1,]) #열은 벡터
+
+str(df1[1]) #데이터프레임으로 추출
+str(df1[2])
+
+df1[[1]] #벡터 타입
+```
+
+
+
+데이터프레임 전체를 벡터로 변환 (데이터프레임이 하나의 행 또는 열로 구성된 경우에만 가능)
+
+```
+#1)df -> mat
+as.matrix(df2)
+
+#2)mat -> as.vector ->벡터
+as.vector(as.matrix(df2))
+
+df3<-data.frame(odd=c(1,3,5), even =c("two","four","six"))
+as.vector(as.matrix(df3))
+```
+
+
+
+as.list() :데이터프레임 -> 리스트
+
+숫자 -> 숫자벡터, 문자->팩터 변환
+
+```
+df4<-data.frame(odd=c(1,3,5), even =c(2,4,6))
+as.list(df4)
+
+> str(as.list(df4))
+List of 2
+ $ odd : num [1:3] 1 3 5
+ $ even: num [1:3] 2 4 6
+```
+
+리스트로 출력됨 확인
+
+
+
+as.matrix() :데이터프레임 -> 행렬
+
+모두 숫자로 구성 -> 숫자행렬, 모두 문자로 구성 ->문자행렬
+
+문자/숫자 섞 -> 모두 문자로 변환된 행렬
+
+```
+> df5<-data.frame(odd=c(1,3,5), even =c(2,4,6))
+> as.matrix(df5)
+     odd even
+[1,]   1    2
+[2,]   3    4
+[3,]   5    6
+
+> df6<-data.frame(odd=c(1,3,5), even =c("two","four","six"))
+> as.matrix(df6)
+     odd even  
+[1,] "1" "two" 
+[2,] "3" "four"
+[3,] "5" "six" 
+```
+
+모두 문자!
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

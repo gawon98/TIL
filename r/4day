@@ -1,0 +1,379 @@
+정규화 : 0<=((각각의 평점 - 최소화)/ (최대값-최소값))
+
+
+
+데이터프레임에 추가하고 싶은 경우
+
+```
+id<-c("a1","a2","a3") #a4
+name<-c("x","y","z") #s
+price<-c(1000,2000,3000) #4000
+product<-data.frame(id,name,price)
+product
+str(product)
+
+product<-rbind(product, c("a4","s",4000))
+product
+```
+
+
+
+두개이상 추가하고 싶은 경우 => 데이터 프레임으로 만들어서 추가해주자
+
+```
+new.rows<-data.frame(id=c("a5","a6"),
+           name=c("i","j"),
+           price=c(5000,6000))
+new.rows
+
+> rbind(product,new.rows)
+
+  id name price
+1 a1    x  1000
+2 a2    y  2000
+3 a3    z  3000
+4 a4    s  4000
+5 a5    i  5000
+6 a6    j  6000
+```
+
+:dancer:주의사항 : 열 이름이 동일해아 함
+
+
+
+열 추가
+
+```
+> cbind(product, madein=c("kor","chi","chi","kor","kor","usa"))
+
+  id name price madein
+1 a1    x  1000    kor
+2 a2    y  2000    chi
+3 a3    z  3000    chi
+4 a4    s  4000    kor
+5 a5    i  5000    kor
+6 a6    j  6000    usa
+```
+
+
+
+# (여러개)데이터프레임 + 데이터프레임
+
+```
+new.cols<-data.frame(manu=c("aa","bb","aa","cc","aa","bb"),
+           quantity=c(10,20,30,20,10,25))
+new.cols
+product
+product<-cbind(product, new.cols)
+
+
+> product
+  id name price madein manu quantity
+1 a1    x  1000    kor   aa       10
+2 a2    y  2000    chi   bb       20
+3 a3    z  3000    chi   aa       30
+4 a4    s  4000    kor   cc       20
+5 a5    i  5000    kor   aa       10
+6 a6    j  6000    usa   bb       25
+```
+
+
+
+1890~2010년 미국인구데이터
+
+1890.tst ~2010.txt
+
+john 10000 
+
+
+
+```
+df1<-data.frame(sex="f",months=1,weight=3.5)
+df2<-data.frame(sex="m",months=3,weight=4.5)
+df3<-data.frame(sex="m",months=4,weight=5.5)
+df4<-data.frame(sex="f",months=7,weight=6.5)
+df5<-data.frame(sex="f",months=8,weight=7.5)
+
+lst<-list(df1,df2,df3,df4,df5)
+lst
+
+class(lst[1])
+class(lst[[1]])
+str(lst[[1]])
+
+rbind(lst[[1]],lst[[2]])
+```
+
+`rbind(lst[[1]],lst[[2]], ... lst[[120]])`
+
+=> 한번에 합치는 작업 `do.call()` 
+
+
+
+# do.call
+
+5개의 리스트 각각을 데이터 프레임으로 바꾸고 do.call 적용으로 합친다.
+
+```
+do.call(rbind,lst) #2차원 배열
+
+lapply() :인수; 리스트의 원소 , 적용함수 (반복)
+
+do.call(rbind,lapply(lst, as.data.frame))
+=> lst에 저장되어 있는 각각의 요소에 대해 as.data.frame 함수를 적용하고,
+변환된 데이터프레임은 rbind함수를 모두 적용하여 하나의 데이터 프레임으로 연결.
+```
+
+`lapply(lst, as.data.frame)` : lst에 저장되어 있는 각 원소에 대해 as.data.frame을 반복해서 적용해라
+
+
+
+
+
+
+
+```
+class(state.x77)
+states<-data.frame(state.x77)
+str(states)
+```
+
+"matrix" "array"  => 'data.frame'
+
+# 조건부 추출!
+
+```
+class(state.x77)
+states<-data.frame(state.x77)
+
+states$name<-row.names(states)
+states
+
+row.names(states) <-NULL#이름 날리기
+states 
+
+states[states$Income>5000, c("name","Income")]
+states[states$Area>10000, c("name","Area")]
+```
+
+
+
+
+
+
+
+```
+rich.states<-states[states$Income>5000, c("name","Income")]
+large.states<-states[states$Area>10000, c("name","Area")]
+
+large.states
+
+states[states$Income>5000, ]#조건을 만족하는 행을 추출
+```
+
+
+
+# :bulb: merge 
+
+: 데이터 프레임 결합 기본값 공통으로 열(name)이 일치하는 행만 선택
+
+```
+merge(rich.states, large.states,all=FALSE) #기본이 FALSE
+merge(rich.states, large.states,all=TRUE) #공통이 아니여도 출력된다
+```
+
+
+
+subset() : 행과 열을 선택
+
+```
+states[states$Income>5000, ]
+
+subset(states, Income>5000 & Area>50000)
+subset(states, name=="Alaska")
+```
+
+조건으로 기술
+
+select로 또 골라내기 가능
+
+```
+subset(states, subset=(Income>5000 & Area>50000), select=Murder)
+
+subset(states, subset=(Income>5000 & Area>50000), select=c(Murder,Illiteracy))
+```
+
+
+
+mpg가 30보다 큰 mtcars 자동차 데이터 출력하기
+
+```
+mtcars
+#1.
+mtcars[mtcars$mpg>30, ]
+#2.
+subset(mtcars,mpg>30)
+
+#mpg열의 평균값보다 큰 자료에 대한 mpg, hp, wt를 출력
+subset(mtcars, subset=(mpg>mean(mpg)), select=c(mpg,hp,wt))
+```
+
+
+
+subset과 select 순서 바껴도 되는데 앞에 subset= 처럼 명시해줄것
+
+
+
+```
+iris
+subset(iris, select=c(Sepal.Width,Petal.Length))
+
+subset(iris, select=-c(Sepal.Width,Petal.Length))
+#마이너스 이거 말고 다
+```
+
+
+
+```
+iris$Sepal.Length/iris$Sepal.Width
+#특성공학(feature engineering) : 주어진 데이터 컬럼으로부터 연산을 수행하여 새로운 컬럼값을 생성
+```
+
+
+
+# with
+
+```
+with(iris, Sepal.Length/Sepal.Width)
+
+with(iris, {#명령문 기술})
+
+>   summary(iris$Sepal.Length)
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  4.300   5.100   5.800   5.843   6.400   7.900 
+  
+  
+with(iris,{print(summary(Sepal.Length))
+    plot(Sepal.Length, Sepal.Width)
+    plot(Petal.Length, Petal.Width)
+    
+    })
+```
+
+
+
+```
+with(iris,{
+  stats<<-summary(Sepal.Length)
+    stats
+    })  
+  #함수밖에서 선언된 변수를 사용하고 싶다면 << 화살표 두개로
+```
+
+
+
+with, within은 거의 동일 (코드의 양을 줄여줌)
+
+차이점은 within은 데이터 수정이 가능함, with는 불가
+
+```
+iris$Sepal.Ratio <- iris$Sepal.Length/iris$Sepal.Width
+iris<-within(iris, Sepal.Ratio <- Sepal.Length/Sepal.Width)
+iris
+
+
+within(iris,{
+  Sepal.Ratio = ifelse(is.na(Sepal.Ratio), median(Sepal.Ratio, na.rm=T), Sepal.Ratio)
+})
+
+#Sepal.Ratio열의 값이 na -> 중앙값으로 대체 
+
+```
+
+
+
+# SQL
+
+SQL: 데이터베이스에 데이터를 검색/수정/삭제/추가 작업
+수행할 수 있도록 해주는 사전에 약속된 데이터베이스 표준 질의어
+
+
+
+```
+#sqldf패키지 : SQL 명령문을 사용할 수 있음
+
+install.packages("sqdlf") #패키지 설치
+library(sqldf) #설치된 패키지를 프로그램에서 사용하기 위해 불러오기
+```
+
+
+
+```
+mtcars
+sqldf("select * frome mtcars") #행이름이 나오지 않는 특징=>번호로
+
+# mtcars에 저장되어 있는 모든(*) 데이터를 추출하시오.
+#검색 = select 추출컬럼1, ... , 추출컬럼n from 테이블 명
+```
+
+
+
+mtcars
+
+![image-20210224143536107](4day.assets/image-20210224143536107.png)
+
+sqldf("select * frome mtcars")
+
+![image-20210224143553257](4day.assets/image-20210224143553257.png)
+
+
+
+특정 값만
+
+```
+sqldf("select cyl,hp,gear from mtcars")
+```
+
+
+
+행이름 출력하고 싶으면 
+
+```
+sqldf("select * from mtcars", row.names = TRUE)
+```
+
+
+
+```
+> sqldf("select * from mtcars where mpg>30", row.names = TRUE)
+                mpg cyl disp  hp drat    wt  qsec vs am gear carb
+Fiat 128       32.4   4 78.7  66 4.08 2.200 19.47  1  1    4    1
+Honda Civic    30.4   4 75.7  52 4.93 1.615 18.52  1  1    4    2
+Toyota Corolla 33.9   4 71.1  65 4.22 1.835 19.90  1  1    4    1
+Lotus Europa   30.4   4 95.1 113 3.77 1.513 16.90  1  1    5    2
+```
+
+
+
+hp 오름차순으로 정렬 
+
+```
+sqldf("select * from mtcars where mpg>30 order by hp", row.names = TRUE)
+```
+
+
+
+```
+sqldf("select avg(mpg) as avg_mpg from mtcars where mpg>30 order by cyl", row.names = TRUE)
+# avg(mpg)구하고 avg_mpg라는 이름으로 쓰라는 뜻  + 조건 +실린더 기준으로 정렬 
+
+  avg_mpg
+1  31.775
+```
+
+
+
+
+
+
+

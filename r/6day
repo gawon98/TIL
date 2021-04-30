@@ -1,0 +1,332 @@
+![image-20210226091941996](6day.assets/image-20210226091941996.png)
+
+
+
+# grep 옵션
+
+문자열 대체
+
+fixed=false(default), pattern  작성된 식을 정규표현식
+
+fixed=true pattern에 작성된 값을 문자열로 취급
+
+```
+words<-c("at","bat","cat","cheap","check","chesse","chick","hat")
+
+> grep("che",words,value=TRUE)
+[1] "cheap"  "check"  "chesse"
+> grep("che",words) #인덱스로 나온다
+[1] 4 5 6
+
+grep("at",words,value=TRUE)
+```
+
+
+
+# 정규표현
+
+대괄호 : 위치 상관 안씀 
+
+```
+#c또는 h
+grep("[ch]",words,value=TRUE)
+
+
+grep("[at]",words,value=TRUE)
+
+
+#ch 또는 at
+grep("ch|at",words,value=TRUE)
+```
+
+
+
+```
+#check , chick
+#ch + e 또는 i +ch
+grep("ch(e|i)ck",words,value=TRUE)
+```
+
+
+
+## 메타문자
+
+| ?    | ?앞의 문자가 0번 또는 1번 나타나는 패턴( 최대 1번 ) |
+| ---- | --------------------------------------------------- |
+| *    | *앞의 문자가 0번 이상 반복되는 패턴 (최소0번)       |
+| +    | +앞의 문자가 1번 이상 반복되는 패턴 (최소1번)       |
+
+````
+#cheese , chase 찾기
+
+grep("ch(a*|e*)se",words, value=TRUE)
+````
+
+
+
+### `^ , $`
+
+```
+
+#c로 시작하는 말
+grep("^c", words, value=TRUE)
+grep("^a",words,value=TRUE)
+
+#t로 끝나는 말
+grep("t$",words, value=TRUE)
+
+```
+
+
+
+### `.`, ` .*`
+
+```
+.(마침표) : 모든 문자
+.* : 모든 문자가 0개 이상
+
+#c로 시작하고 t로 끝나는 모든 문자열을 검색
+grep("^c.t$",words,value=TRUE)
+```
+
+
+
+기타 등등
+
+#[[:alnum:]] : 알파벳+숫자
+#[[:digit:]] : 숫자
+#[[:punct:]] : 문장부호, 특수문자
+#[[:space:]] : 공백
+
+
+
+```
+words2<-c("12 Dec", "OK", "http://", "<TITLE>Time?</TITLE>","12345", "Hi there")
+
+
+> grep("[[:alnum:]]", words2, value=TRUE)
+[1] "12 Dec"               "OK"                  
+[3] "http://"              "<TITLE>Time?</TITLE>"
+[5] "12345"                "Hi there"            
+> grep("||w", words2, value=TRUE)
+[1] "12 Dec"               "OK"                  
+[3] "http://"              "<TITLE>Time?</TITLE>"
+[5] "12345"                "Hi there" 
+
+> grep("[[:alpha:]]", words2, value=TRUE)
+[1] "12 Dec"               "OK"                  
+[3] "http://"              "<TITLE>Time?</TITLE>"
+[5] "Hi there"      
+
+> grep("[[:digit:]]", words2, value=TRUE)
+[1] "12 Dec" "12345" 
+> grep("||d", words2, value=TRUE)
+[1] "12 Dec"               "OK"                  
+[3] "http://"              "<TITLE>Time?</TITLE>"
+[5] "12345"                "Hi there" 
+
+> grep("[[:punct:]]", words2, value=TRUE)
+[1] "http://"              "<TITLE>Time?</TITLE>"
+
+grep("[[:space:]]", words2, value=TRUE)
+grep("||s", words2, value=TRUE)
+```
+
+
+
+# 📆DATE
+
+```
+Sys.Date()
+date()
+Sys.time()
+
+class(Sys.Date()) #Date
+
+class("2021-02-26") #char
+#문자열 -> 날짜변환
+class(as.Date("2021-02-26")) #Date
+
+as.Date("02/26/2021", format="%m/%d/%Y") #기본 형식 아닐때 format 지정
+d<-as.Date("2021-02-26")
+format(d, format="%m/%d/%Y") #"02/26/2021"
+class(format(d,format="%m/%d/%Y")) #char
+
+today<-Sys.Date()
+today  #"2021-02-26"
+format(today,format="%Y/%m/%d %A") #요일까지 출력
+weekdays(as.Date("2021-02-27")) #토요일
+```
+
+ 
+
+## seq + as.Date
+
+: 연속된 날짜 생성에 사용 가능
+
+
+
+```
+s<-as.Date("2021-02-26")
+e<-as.Date("2021-04-1")
+seq(from=s, to=e, by=1) #1일 간격으로 다 나옴
+seq(s,e,1) #위와 같음
+
+seq(from=s, by=1, length.out=10) #by=1 1일 간격, 10개
+seq(from=s, by=7, length.out=9) #7일 간격 9개
+seq(from=s, by="week", length.out=10) #"week" or "7days" 
+seq(from=s, by="2 months", length.out=10)
+
+```
+
+month, year , 2years ... 
+
+
+
+```
+> seq(from=as.Date("2021-01-30"), by="month", length.out=5)
+[1] "2021-01-30" "2021-03-02" "2021-03-30" "2021-04-30"
+[5] "2021-05-30"
+#2월 30일 없어서 별도 처리 필요하다 
+```
+
+
+
+```
+> s<-as.Date("2021-02-26")
+> qrt<-seq(from=s , by="3 months", length.out=4)
+> qrt
+[1] "2021-02-26" "2021-05-26" "2021-08-26" "2021-11-26"
+> months(qrt)
+[1] "2월"  "5월"  "8월"  "11월"
+> quarters(qrt) #분기 정보
+[1] "Q1" "Q2" "Q3" "Q4"
+```
+
+
+
+# 입력 
+
+```
+product<-data.frame()
+product 
+product<-edit(product) #엑셀창 처럼 데이터 편집기 창 뜸
+
+
+#product<-edit(product) #fix (product)와 같은 문장장
+
+> str(product)
+'data.frame':	3 obs. of  3 variables:
+ $ id   : chr  "A001" "A002" "A003"
+ $ name : chr  "Mouse" "Keyboard" "USB"
+ $ price: num  30000 90000 50000
+```
+
+
+
+# 파일
+
+```
+write.csv(product, file="myproduct.csv") #파일 생성
+```
+
+
+
+```
+> p <- readClipboard() #엑셀에서 복사 후 작업
+> p
+[1] "Mouse"    "Keyboard" "USB" 
+
+​```
+> p <- readClipboard() #엑셀에서 복사 후 작업
+> p
+[1] "id\tname\tprice"       "A001\tMouse\t30000"   
+[3] "A002\tKeyboard\t90000" "A003\tUSB\t50000"   
+
+> read.table(file="clipboard", sep="\t") 
+
+    V1       V2    V3
+1   id     name price
+2 A001    Mouse 30000
+3 A002 Keyboard 90000
+4 A003      USB 50000
+```
+
+첫번째 줄 데이터가 아닌데 데이터로 읽을때 `header=TRUE` 
+
+```
+> read.table(file="clipboard", sep="\t", header=TRUE) 
+
+    id     name price
+1 A001    Mouse 30000
+2 A002 Keyboard 90000
+3 A003      USB 50000
+```
+
+
+
+## read (외출..)
+
+
+
+```
+read.csv(
+  file,          # 파일명
+  header=FALSE,  # 파일의 첫 행을 헤더로 처리할 것인지 여부
+  # 데이터에 결측치가 포함되어 있을 경우 R의 NA에 대응시킬 값을 지정한다.
+  # 기본값은 "NA"로, "NA"로 저장된 문자열들은 R의 NA로 저장된다.
+  na.strings="NA",
+  # 문자열을 팩터로 저장할지 또는 문자열로 저장할지 여부를 지정하는 데 사용한다. 별다른
+  # 설정을 하지 않았다면 기본값은 보통 TRUE다.
+  )
+```
+
+
+
+```
+> p<-read.csv("product.csv", stringsAsFactors = FALSE)
+> str(p)
+'data.frame':	3 obs. of  3 variables:
+ $ id   : chr  "A001" "A002" "A003"
+ $ name : chr  "Mouse" "Keyboard" "USB"
+ $ price: int  30000 90000 50000
+> p<-read.csv("product.csv", as.is =TRUE) #as.is =TRUE는 stringsAsFactors = FALSE와 같음
+
+> p
+    id     name price
+1 A001    Mouse 30000
+2 A002 Keyboard 90000
+3 A003      USB 50000
+```
+
+
+
+# 엑셀 데이터 읽기
+
+
+
+```
+install.packages("openxlsx")
+library(openxlsx)
+read.xlsx("product.xlsx", sheet=1)
+
+url<-"https://archive.ics.uci.edu/ml/machine-learning-databases/iris/iris.data"
+iris.uci<-read.csv(url, header=FALSE)
+iris.uci
+
+download.file(url=url, destfile = "myIris.csv") #url으로 다운 받은 파일을 저 이름으로 설정
+
+
+url<-"http://seanlahman.com/files/database/baseballdatabank-master_2016-03-02.zip"
+local.copy<-"baseball.zip" #zip형식
+download.file(url, local.copy)
+
+bs<-read.csv(unzip(zipfile=local.copy, "baseballdatabank-master/core/Salaries.csv"))  #압축 해제 ㄱㄴ ? , 폴더 경로 만들어서 설정 
+head(bs)
+
+```
+
+
+
+
+
