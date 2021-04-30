@@ -58,6 +58,8 @@ twitter.add_dictionary('은경이', 'Noun') #품사 지정해서 추가
 
 워드 임베딩(Word2Vec)으로 딥러닝 학습데이터 제공
 
+어를 랜덤한 값을 가지는 밀집 벡터로 변환한 뒤에, 인공 신경망의 가중치를 학습하는 것과 같은 방식으로 단어 벡터를 학습
+
 <img src="http://aidev.co.kr/files/attach/images/2997/187/003/1edd311ac54e18660d9afe7e4458dec4.png" alt="dense.png" style="zoom: 33%;" />
 
 
@@ -114,7 +116,7 @@ twitter.add_dictionary('은경이', 'Noun') #품사 지정해서 추가
 
 정확도? 빈도? 
 
-쓴다면 워드임베딩 벡터의 시각화
+쓴다면 워드임베딩 벡터의 시각화 : 단어간의 유사성을 확인할 수 있음
 
 <img src="https://wikidocs.net/images/page/50704/man.PNG" alt="img" style="zoom: 67%;" />
 
