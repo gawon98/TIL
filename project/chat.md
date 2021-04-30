@@ -76,7 +76,7 @@ twitter.add_dictionary('은경이', 'Noun') #품사 지정해서 추가
 
 * stt + **Dialogflow** 사용 (구글 챗봇 API) 
 
-  : 한글 자연어 처리 지원 / ai랑 빅데이터가 할게 없어짐
+  : 한글 자연어 처리 지원 / ai랑 빅데이터가 할게 없어져서 못쓸듯
 
   https://github.com/allieus/demo-20180805-startup-dev - Google Dialogflow와 파이썬/장고를 활용한 챗봇 만들기
 
@@ -106,7 +106,7 @@ twitter.add_dictionary('은경이', 'Noun') #품사 지정해서 추가
 
  위처럼 문장이 입력으로 들어오면 개체명이 출력으로 나온다. 
 
-
+​	BILSTM 챗봇 코드 : https://github.com/pankaj1131/ChatBot_BiLSTM
 
 
 
